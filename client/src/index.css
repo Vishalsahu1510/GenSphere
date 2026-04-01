@@ -1,15 +1,20 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&family=Syne:wght@400..800&display=swap');
 
 @import "tailwindcss";
 
 
 *{
-   font-family: "Outfit", sans-serif;
+   font-family: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+.font-heading {
+  font-family: "Syne", "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
 }
 
 @theme {
-  --color-primary: #5044E5;
-  
+  --color-primary: #5044e5;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Syne", "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
 }
 
 .reset-tw, .reset-tw * {
@@ -19,4 +24,166 @@
 
 .cl-drawerRoot{
   z-index: 50;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  background: #030712;
+  color: #e2e8f0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@layer base {
+  :root {
+    --gs-bg: 2 6 23;            /* slate-950 */
+    --gs-surface: 255 255 255;  /* for alpha surfaces */
+    --gs-border: 255 255 255;
+  }
+}
+
+@layer utilities {
+  .gs-page {
+    @apply h-full overflow-y-scroll p-6;
+  }
+
+  .gs-noise {
+    background-image:
+      radial-gradient(circle at 20% 15%, rgba(124, 58, 237, 0.25), transparent 45%),
+      radial-gradient(circle at 80% 30%, rgba(59, 130, 246, 0.20), transparent 40%),
+      radial-gradient(circle at 50% 85%, rgba(16, 185, 129, 0.18), transparent 50%),
+      radial-gradient(circle at 60% 60%, rgba(255, 255, 255, 0.06), transparent 55%);
+  }
+
+  .gs-card {
+    @apply rounded-2xl border border-white/[0.08] bg-white/[0.04] backdrop-blur-xl;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.04) inset,
+      0 24px 80px -12px rgba(0,0,0,0.45);
+  }
+
+  .gs-card-pad {
+    @apply p-6 sm:p-7;
+  }
+
+  .gs-h1 {
+    @apply font-heading text-lg font-bold tracking-tight text-white;
+  }
+
+  /* App shell: main content area behind /ai routes */
+  .gs-main {
+    @apply relative flex-1 min-h-0 min-w-0 overflow-y-auto;
+    background:
+      radial-gradient(ellipse 80% 50% at 50% -20%, rgba(124, 58, 237, 0.18), transparent),
+      radial-gradient(ellipse 60% 40% at 100% 50%, rgba(59, 130, 246, 0.08), transparent),
+      linear-gradient(180deg, #030712 0%, #0b1020 100%);
+  }
+
+  .gs-main-inner {
+    @apply mx-auto w-full max-w-6xl px-5 py-8 sm:px-8 sm:py-10 lg:px-10;
+  }
+
+  .gs-panel-title {
+    @apply flex items-center gap-3 border-b border-white/[0.06] pb-4;
+  }
+
+  .gs-panel-icon {
+    @apply flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-violet-500/30 to-fuchsia-500/20 text-violet-200 ring-1 ring-white/10;
+  }
+
+  .gs-label {
+    @apply mt-6 text-sm font-medium text-slate-200;
+  }
+
+  .gs-input {
+    @apply w-full mt-2 px-3 py-2.5 rounded-lg outline-none border border-white/10 bg-black/20 text-slate-100 placeholder:text-slate-500 focus:ring-2 focus:ring-indigo-500;
+  }
+
+  .gs-file {
+    @apply w-full mt-2 px-3 py-2.5 rounded-lg outline-none border border-white/10 bg-black/20 text-sm text-slate-200;
+    @apply file:mr-3 file:rounded-md file:border-0 file:bg-white/10 file:px-3 file:py-2 file:text-slate-100 hover:file:bg-white/15;
+  }
+
+  .gs-chip {
+    @apply text-xs px-4 py-1 rounded-full cursor-pointer transition-colors border;
+  }
+
+  .gs-chip-idle {
+    @apply bg-white/5 border-white/10 text-slate-300 hover:bg-white/10;
+  }
+
+  .gs-btn {
+    @apply flex w-full items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-medium text-white transition hover:opacity-95 disabled:opacity-60;
+  }
+
+  .gs-btn-pop {
+    @apply relative overflow-hidden;
+  }
+
+  .gs-btn-pop::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at var(--x, 50%) var(--y, 50%), rgba(255,255,255,0.35), transparent 45%);
+    opacity: 0;
+    transition: opacity 180ms ease;
+    pointer-events: none;
+  }
+
+  .gs-btn-pop:hover::after {
+    opacity: 1;
+  }
+
+  .gs-float {
+    animation: gs-float 6s ease-in-out infinite;
+  }
+
+  .gs-float-slow {
+    animation: gs-float 9s ease-in-out infinite;
+  }
+
+  .gs-spin-slow {
+    animation: gs-spin 14s linear infinite;
+  }
+
+  .gs-glow {
+    filter: drop-shadow(0 0 24px rgba(124, 58, 237, 0.35));
+  }
+
+  .gs-section-title {
+    @apply font-heading text-slate-100 text-4xl font-bold tracking-tight sm:text-5xl;
+  }
+
+  .gs-section-subtitle {
+    @apply text-slate-400 max-w-lg mx-auto;
+  }
+
+  /* Hide scrollbars but keep scroll behavior */
+  .gs-scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .gs-scrollbar-hide::-webkit-scrollbar {
+    width: 0px;
+    height: 0px;
+  }
+}
+
+@keyframes gs-float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -10px, 0); }
+}
+
+@keyframes gs-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gs-float, .gs-float-slow, .gs-spin-slow {
+    animation: none !important;
+  }
 }

@@ -1,34 +1,54 @@
 import { useState } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
-import Navbar from '../components/Navbar'
-import { assets } from '../assets/assets';
-import { Menu, X } from 'lucide-react';
-import Sidebar from '../components/Sidebar';
-import { SignIn, useUser } from '@clerk/clerk-react';
+import { assets } from '../assets/assets'
+import { Menu, X } from 'lucide-react'
+import Sidebar from '../components/Sidebar'
+import { SignIn, useUser } from '@clerk/clerk-react'
 
 const Layout = () => {
-  const navigate = useNavigate();
-  const [sidebar, setSidebar] = useState(false);
-  const { user } = useUser();
-  return user ?(
-    <div className='flex flex-col items-start justify-start h-screen'>
-      <nav className='w-full px-8 min-h-14 flex items-center justify-between border-b border-gray-200'>
-        <img className='cursor-pointer w-32 sm:w-44' src={assets.logo} alt="Logo" onClick={()=> navigate('/')} />
-        {
-          sidebar ? <X className='w-6 h-6 text-gray-600 cursor-pointer sm:hidden' onClick={() => setSidebar(false)} /> : <Menu className='w-6 h-6 text-gray-600 cursor-pointer sm:hidden' onClick={() => setSidebar(true)} />
-        }
-      </nav>
-      <div className='flex-1 w-full flex h-[calc(100vh-64px)]'>
-        <Sidebar sidebar={sidebar} setSidebar={setSidebar}/>
-        <div className='flex-1 bg-[#F4F7FB]'>
-          <Outlet/>
-        </div>
-      </div>
-      
+  const navigate = useNavigate()
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const { user } = useUser()
+
+  return user ? (
+    <div className="flex h-screen flex-col bg-[#030712] text-slate-100 md:flex-row">
+      {/* Mobile top bar */}
+      <header className="flex h-14 shrink-0 items-center justify-between border-b border-white/[0.06] bg-[#030712]/90 px-4 backdrop-blur-xl md:hidden">
+        <img
+          className="h-8 w-auto cursor-pointer"
+          src={assets.logo}
+          alt="GenSphere"
+          onClick={() => navigate('/')}
+        />
+        <button
+          type="button"
+          aria-label="Toggle menu"
+          className="flex h-10 w-10 items-center justify-center rounded-xl border border-white/10 bg-white/5 text-slate-200"
+          onClick={() => setSidebarOpen((o) => !o)}
+        >
+          {sidebarOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
+      </header>
+
+      {/* Mobile overlay */}
+      {sidebarOpen ? (
+        <button
+          type="button"
+          aria-label="Close menu"
+          className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      ) : null}
+
+      <Sidebar sidebar={sidebarOpen} setSidebar={setSidebarOpen} />
+
+      <main className="gs-main flex-1">
+        <Outlet />
+      </main>
     </div>
-  ):(
-    <div className='flex items-center justify-center h-screen '>
-      <SignIn/>
+  ) : (
+    <div className="flex h-screen items-center justify-center bg-[#030712] text-slate-100">
+      <SignIn />
     </div>
   )
 }

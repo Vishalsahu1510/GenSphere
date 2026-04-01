@@ -1,10 +1,10 @@
-# [🔥 Quick.AI](quick-ai-sooty.vercel.app/)
+# **GenSphere**
 
 
 
 ## 🔮 AI SaaS Platform – Built with PERN Stack (PostgreSQL, Express, React, Node.js)
 
-Easily create, analyze, and manage AI-generated content with QuickAI, an open-source AI-powered SaaS platform built using the PERN Stack (PostgreSQL, Express, React, Node.js).  
+Easily create, analyze, and manage AI-generated content with GenSphere, an open-source AI-powered SaaS platform built using the PERN Stack (PostgreSQL, Express, React, Node.js).  
 Deployed on Vercel.
 
 ## Features
@@ -35,13 +35,13 @@ Deployed on Vercel.
 
 ```bash
 git clone 
-cd QuickAI
+cd GenSphere
 ```
 
 ### 2. Project Structure
 
 ```
-QuickAI/
+GenSphere/
   ├── client/    # React frontend
   └── server/    # Node.js/Express backend
 ```
@@ -99,7 +99,7 @@ You’ll need:
 
 ## Useful Links
 
-- [Demo App](https://)
+- [Demo App](https://quick-ai-sooty.vercel.app/)
 - [Neon Database](https://neon.tech/)
 - [Clerk Authentication](https://clerk.com/)
 - [Clipdrop APIs](https://clipdrop.co/apis/docs/text-to-image)

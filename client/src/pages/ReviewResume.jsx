@@ -1,102 +1,113 @@
 import { FileText, Sparkles } from 'lucide-react'
 import { useState } from 'react'
-import axios from "axios";
-import { useAuth } from "@clerk/clerk-react";
-import toast from "react-hot-toast";
-import Markdown from 'react-markdown';
+import axios from 'axios'
+import { useAuth } from '@clerk/clerk-react'
+import toast from 'react-hot-toast'
+import Markdown from 'react-markdown'
+import ToolWorkspace from '../components/ToolWorkspace'
 
-axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
-
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL
 
 const ReviewResume = () => {
-  const [input, setInput] = useState('');
+  const [input, setInput] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [content, setContent] = useState('')
+  const { getToken } = useAuth()
 
-  const [loading,setLoading] = useState(false);
-  const [content, setContent] = useState('');
- 
-  const {getToken} = useAuth();
   const onSubmitHandler = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     try {
       setLoading(true)
+      const formData = new FormData()
+      formData.append('resume', input)
 
-      const formData = new FormData();
-      formData.append('resume', input);
-
-      const {data} = await axios.post(
-        '/api/ai/resume-review',
-        formData,
-      {
+      const { data } = await axios.post('/api/ai/resume-review', formData, {
         headers: {
-          'Authorization': `Bearer ${await getToken()}`
-        }
+          Authorization: `Bearer ${await getToken()}`,
+        },
       })
 
-      if(data.success){
+      if (data.success) {
         setContent(data.content)
-      }else{
+      } else {
         toast.error(data.message)
       }
-      
     } catch (error) {
       toast.error(error.message)
-      // console.log(error)
     }
     setLoading(false)
   }
+
   return (
-    <div className="h-full overflow-y-scroll p-6 flex items-start flex-wrap gap-4 text-slate-700">
-
-     {/*-------> left column <-------  */}
-      <form onSubmit={onSubmitHandler} className="w-full max-w-lg p-4 bg-white rounded-lg border border-gray-200">
-        <div className="flex items-center gap-3">
-          <Sparkles className="w-6 text-[#00DA83]" />
-          <h1 className=" text-xl font-semibold ">Resume Review</h1>
+    <ToolWorkspace
+      eyebrow="Career"
+      title="Resume review"
+      subtitle="Upload a PDF and get structured feedback to stand out in applications."
+    >
+      <form onSubmit={onSubmitHandler} className="gs-card gs-card-pad">
+        <div className="gs-panel-title">
+          <div className="gs-panel-icon bg-gradient-to-br from-emerald-500/25 to-cyan-600/15 text-emerald-100">
+            <Sparkles className="h-5 w-5" />
+          </div>
+          <div>
+            <h2 className="gs-h1">Upload</h2>
+            <p className="text-xs text-slate-500">PDF only</p>
+          </div>
         </div>
-        <p className="mt-6 text-sm font-medium">Upload Resume</p>
 
+        <div className="mt-6 space-y-4">
+          <label className="text-xs font-medium uppercase tracking-wider text-slate-500">Resume (PDF)</label>
+          <input
+            onChange={(e) => setInput(e.target.files[0])}
+            type="file"
+            accept="application/pdf"
+            required
+            className="gs-file"
+          />
+          <p className="text-xs text-slate-500">Max ~5MB, resume PDFs only.</p>
 
-        <input onChange={(e)=> setInput(e.target.files[0])}  type="file" accept='application/pdf' placeholder="The future of artificial intelligence is..." required className="w-full mt-2 p-2 px-3 outline-none border border-gray-300 rounded-md text-sm text-gray-600" />
-
-        <p className="mt-1 text-xs text-gray-500 font-light">Supports PDF(size &lt;5mb), resume only.</p>
-
-        <button disabled={loading} className=' w-full flex items-center justify-center gap-2 px-4 py-2 mt-6 text-sm text-white  rounded-lg bg-gradient-to-r from-[#00DA83] to-[#009BB3] '>
-          {
-          loading ? <span className="w-4 h-4 my-1 rounded-full border-2 border-t-transparent animate-spin"></span>
-          : <FileText className=' w-5'/>
-        }
-          Review Resume
-        </button>
-        
+          <button
+            disabled={loading}
+            type="submit"
+            className="gs-btn gs-btn-pop w-full rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 font-heading text-[15px] font-semibold shadow-lg shadow-emerald-900/20"
+          >
+            {loading ? (
+              <span className="h-4 w-4 rounded-full border-2 border-t-transparent animate-spin" />
+            ) : (
+              <FileText className="h-5 w-5" />
+            )}
+            Review resume
+          </button>
+        </div>
       </form>
 
-
-      {/* --------------------->right column <--------------- */}
-      <div className="w-full max-w-lg p-4 bg-white rounded-lg flex flex-col border border-gray-200 min-h-96 max-h-[600px]">
-        <div className="flex items-center gap-3">
-          <FileText className="w-5 h-5 text-[#00DA83]" />
-          <h1 className=" text-xl font-semibold ">Analysis Results</h1>
+      <div className="gs-card gs-card-pad flex min-h-[28rem] max-h-[min(70vh,640px)] flex-col">
+        <div className="gs-panel-title">
+          <div className="gs-panel-icon bg-gradient-to-br from-emerald-500/25 to-cyan-600/15 text-emerald-100">
+            <FileText className="h-5 w-5" />
+          </div>
+          <div>
+            <h2 className="gs-h1">Analysis</h2>
+            <p className="text-xs text-slate-500">Markdown report</p>
+          </div>
         </div>
-        {
-          !content ? (
-            <div className="flex-1 flex items-center justify-center">
-              <div className="flex flex-col text-sm items-center gap-5 text-gray-400">
-               <FileText className=" w-9 h-9" />
-               <p className="text-center">Upload your resume and click "Review Resume" to get started</p>
-              </div>
-            </div>
-          ) : (
-            <div className=" mt-3 h-full overflow-y-scroll text-sm text-slate-600">
-              <div className='reset-tw'>
-                <Markdown >{content}</Markdown>
-              </div>
-            </div>
-          )
-        }
-        
 
+        {!content ? (
+          <div className="flex flex-1 flex-col items-center justify-center gap-4 py-16 text-center">
+            <div className="flex h-16 w-16 items-center justify-center rounded-2xl border border-dashed border-white/10 bg-white/[0.02]">
+              <FileText className="h-7 w-7 text-slate-600" />
+            </div>
+            <p className="max-w-xs text-sm text-slate-500">Feedback will appear here after upload.</p>
+          </div>
+        ) : (
+          <div className="mt-6 min-h-0 flex-1 overflow-y-auto rounded-xl border border-white/[0.06] bg-black/20 p-4 text-sm leading-relaxed text-slate-200">
+            <div className="reset-tw">
+              <Markdown>{content}</Markdown>
+            </div>
+          </div>
+        )}
       </div>
-    </div>
+    </ToolWorkspace>
   )
 }
 

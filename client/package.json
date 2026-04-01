@@ -1,5 +1,5 @@
 {
-  "name": "quick-ai",
+  "name": "gensphere",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -13,6 +13,7 @@
     "@clerk/clerk-react": "^5.37.0",
     "@tailwindcss/vite": "^4.1.11",
     "axios": "^1.11.0",
+    "framer-motion": "^12.38.0",
     "lucide-react": "^0.532.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",

@@ -1,97 +1,107 @@
-import { Protect } from "@clerk/clerk-react";
-import { Gem, Sparkles } from "lucide-react";
-import React, { useEffect, useState } from "react";
-import CreationItem from "../components/CreationItem";
-import { dummyCreationData } from "../assets/assets";
+import { Protect } from '@clerk/clerk-react'
+import { Gem, Sparkles } from 'lucide-react'
+import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
+import CreationItem from '../components/CreationItem'
+import axios from 'axios'
+import { useAuth } from '@clerk/clerk-react'
+import toast from 'react-hot-toast'
 
-import axios from "axios";
-import { useAuth } from "@clerk/clerk-react";
-import toast from "react-hot-toast";
-
-axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL
 
 const Dashboard = () => {
-  const [creations, setCreations] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [creations, setCreations] = useState([])
+  const [loading, setLoading] = useState(true)
+  const { getToken } = useAuth()
 
-  const {getToken} = useAuth();
-
-  const getDashboardData = async ()=>{
+  const getDashboardData = async () => {
     try {
-      const {data } = await axios.get('/api/user/get-user-creations', {
-        headers: {Authorization: `Bearer ${await getToken()}`}
+      const { data } = await axios.get('/api/user/get-user-creations', {
+        headers: { Authorization: `Bearer ${await getToken()}` },
       })
 
       if (data.success) {
         setCreations(data.creations)
-        
-      }else{
+      } else {
         toast.error(data.message)
       }
     } catch (error) {
       toast.error(error.message)
-      
     }
     setLoading(false)
-
   }
 
   useEffect(() => {
-    getDashboardData();
-  }, []);
+    getDashboardData()
+  }, [])
 
   return (
-    <div className="h-full overflow-y-scroll p-6">
-      <div className="flex justify-start gap-4 flex-wrap">
-        {/* Total Creation Card */}
-        <div className="flex justify-between items-center w-72 p-4 px-6 bg-white rounded-xl border border-gray-200 ">
-          <div className="text-slate-600">
-            <p className="text-sm">Total Creations</p>
-            <h2 className="text-xl font-semibold">{creations.length}</h2>
+    <div className="gs-main-inner min-h-full">
+      <header className="mb-10 max-w-2xl">
+        <p className="font-heading text-xs font-semibold uppercase tracking-[0.2em] text-violet-400/90">Overview</p>
+        <h1 className="font-heading mt-2 text-3xl font-bold tracking-tight text-white sm:text-4xl">Dashboard</h1>
+        <p className="mt-2 text-slate-400">Your creations and plan at a glance.</p>
+      </header>
+
+      <div className="mb-10 grid gap-4 sm:grid-cols-2 lg:max-w-3xl">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35 }}
+          className="gs-card gs-card-pad flex items-center justify-between"
+        >
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wider text-slate-500">Total creations</p>
+            <p className="font-heading mt-1 text-3xl font-bold tabular-nums text-white">{creations.length}</p>
           </div>
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#3588F2] to-[#0BB0D7] text-white flex justify-center items-center">
-            <Sparkles className="w-5 text-white" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-sky-500 to-cyan-400 text-white shadow-lg shadow-cyan-500/20">
+            <Sparkles className="h-6 w-6" />
           </div>
-        </div>
-        
-        {/* Active Plan Card */}
-        <div className="flex justify-between items-center w-72 p-4 px-6 bg-white rounded-xl border border-gray-200 ">
-          <div className="text-slate-600">
-            <p className="text-sm">Active Plan</p>
-            <h2 className="text-xl font-semibold">
-              <Protect plan='premium' fallback="free" >Premium</Protect>
-            </h2>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.35, delay: 0.05 }}
+          className="gs-card gs-card-pad flex items-center justify-between"
+        >
+          <div>
+            <p className="text-xs font-medium uppercase tracking-wider text-slate-500">Plan</p>
+            <p className="font-heading mt-1 text-3xl font-bold capitalize text-white">
+              <Protect plan="premium" fallback="free">
+                Premium
+              </Protect>
+            </p>
           </div>
-          <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-[#FF61C5] to-[#9E53EE] text-white flex justify-center items-center">
-            <Gem className="w-5 text-white" />
+          <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-fuchsia-500 to-violet-600 text-white shadow-lg shadow-violet-600/25">
+            <Gem className="h-6 w-6" />
           </div>
-        </div>
+        </motion.div>
       </div>
 
-
-      {
-        loading ? (
-          <div className='flex justify-center items-center h-3/4'>
-            <div className='animate-spin rounded-full h-11 w-11 border-3 border-purple-500 border-t-transparent'></div>
-
-          </div>
-        )
-        :
-        (
+      {loading ? (
+        <div className="flex justify-center py-24">
+          <div className="h-11 w-11 animate-spin rounded-full border-2 border-violet-500 border-t-transparent" />
+        </div>
+      ) : (
+        <section>
+          <h2 className="font-heading mb-4 text-lg font-semibold text-white">Recent activity</h2>
           <div className="space-y-3">
-        <p className="mt-6 mb-4">Recent Creations</p>
-        {
-
-          creations.map((item) => <CreationItem key={item.id} item={item} />)
-        }
-      </div>
-        )
-      }
-      
-
-
+            {creations.map((item, i) => (
+              <motion.div
+                key={item.id}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: Math.min(i * 0.04, 0.3) }}
+              >
+                <CreationItem item={item} />
+              </motion.div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
-  );
-};
+  )
+}
 
-export default Dashboard;
+export default Dashboard

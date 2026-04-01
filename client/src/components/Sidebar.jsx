@@ -1,59 +1,135 @@
 import { Protect, useClerk, useUser } from '@clerk/clerk-react'
-import { Eraser, FileText, House, Image, LogOut, Scissors, SquarePen, Users } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
+import {
+  Eraser,
+  FileText,
+  Hash,
+  ImagePlus,
+  LayoutDashboard,
+  LogOut,
+  PenLine,
+  Scissors,
+  Users,
+} from 'lucide-react'
+import { NavLink, useNavigate } from 'react-router-dom'
+import { assets } from '../assets/assets'
 
-const navItems=[
-  {to:'/ai', label:'Dashboard', icon:House},
-  {to:'/ai/write-article', label:'write-article', icon:SquarePen},
-  {to:'/ai/blog-titles', label:'blog-titles', icon:Image},
-  {to:'/ai/generate-images', label:'generate-images', icon:Image},
-  {to:'/ai/remove-background', label:'remove-background', icon:Eraser},
-  {to:'/ai/remove-object', label:'remove-object', icon:Scissors},
-  {to:'/ai/review-resume', label:'review-resume', icon:FileText},
-  {to:'/ai/community', label:'community', icon:Users}
+const navItems = [
+  { to: '/ai', label: 'Dashboard', icon: LayoutDashboard },
+  { to: '/ai/write-article', label: 'Write article', icon: PenLine },
+  { to: '/ai/blog-titles', label: 'Blog titles', icon: Hash },
+  { to: '/ai/generate-images', label: 'Images', icon: ImagePlus },
+  { to: '/ai/remove-background', label: 'Remove background', icon: Eraser },
+  { to: '/ai/remove-object', label: 'Remove object', icon: Scissors },
+  { to: '/ai/review-resume', label: 'Resume review', icon: FileText },
+  { to: '/ai/community', label: 'Community', icon: Users },
 ]
 
-const Sidebar = ({sidebar, setSidebar}) => {
-  const {user} = useUser();
-  const {signOut, openUserProfile} = useClerk();
+const Sidebar = ({ sidebar, setSidebar }) => {
+  const { user } = useUser()
+  const { signOut, openUserProfile } = useClerk()
+  const navigate = useNavigate()
+
   return (
-    <div className= {`w-60 bg-white border-r border-gray-200 flex flex-col justify-between items-center max-sm:absolute top-14 bottom-0 ${sidebar ? 'translate-x-0' :'max-sm:-translate-x-full'} transition-all duration-300 ease-in-out`}>
-      <div className='my-7 w-full'>
-        <img src={user.imageUrl} alt="user-avatar" className='w-13 rounded-full mx-auto' />
-        <h1 className='mt-1 text-center '>{user.fullName}</h1>
-        <div className='px-6 mt-5 text-sm text-gray-600 font-medium'>
-          {navItems.map(({to,label,icon:Icon}, index) => (
-            <NavLink 
-             key={to} 
-             to={to} 
-             end={to === '/ai'}
-            //  onClick={() => setsibar(false)}
-            //  className={({isActive}) => `px-3.5 py-2.5 flex items-center gap-3 rounded ${isActive ? 'bg-gradient-to-r from-[#3C81F6] to-[#9234EA] text-white': '' }`} 
-             >
-            {({isActive}) => (
-              <div onClick={() => setSidebar(false)} className={`px-3.5 py-2.5 flex items-center gap-3 rounded ${isActive ? 'bg-gradient-to-r from-[#3C81F6] to-[#9234EA] text-white' : ''}`}>
-                <Icon className={`w-4 h-4 ${isActive ? 'text-white' : ''}`} />
-                {label}
-              </div>
-            )}
-            </NavLink>
-            ))}
-        </div>
+    <aside
+      className={[
+        'fixed z-50 flex w-[280px] flex-col border-r border-white/[0.06] bg-[#030712]/95 backdrop-blur-xl transition-transform duration-300 md:static md:h-screen',
+        'max-md:top-14 max-md:h-[calc(100vh-3.5rem)]',
+        sidebar ? 'translate-x-0' : '-translate-x-full',
+        'md:translate-x-0',
+      ].join(' ')}
+    >
+      {/* Brand — desktop only in sidebar (mobile uses logo in header) */}
+      <div className="hidden border-b border-white/[0.06] px-5 py-5 md:block">
+        <button
+          type="button"
+          onClick={() => {
+            setSidebar(false)
+            navigate('/')
+          }}
+          className="block w-full text-left"
+        >
+          <img src={assets.logo} alt="GenSphere" className="h-9 w-auto max-w-[200px]" />
+        </button>
+        <p className="mt-3 font-heading text-[11px] font-medium uppercase tracking-[0.18em] text-slate-500">
+          Studio
+        </p>
       </div>
-      <div className='w-full border-t border-gray-200 p-4 px-7 flex items-center justify-between'>
-            <div onClick={openUserProfile} className='flex gap-2 items-center cursor-pointer'>
-              <img src={user.imageUrl} alt="user-avatar" className='w-8  rounded-full' />
-              <div className='text-sm font-medium'>
-                <h1>{user.fullName}</h1>
-                <p className='text-xs text-gray-500'>
-                  <Protect plan='premium' fallback='Free'>Premium </Protect>
-                  Plan
-                </p>
-              </div>
+
+      {/* Profile (single card: name + plan) */}
+      <div className="border-b border-white/[0.06] px-5 py-5">
+        <button
+          type="button"
+          onClick={openUserProfile}
+          className="w-full rounded-2xl border border-white/[0.06] bg-white/[0.03] p-4 text-left transition hover:bg-white/[0.05]"
+        >
+          <div className="flex items-center gap-3">
+            <img
+              src={user.imageUrl}
+              alt=""
+              className="h-11 w-11 rounded-2xl object-cover ring-2 ring-white/10"
+            />
+            <div className="min-w-0 flex-1">
+              <p className="truncate font-heading text-sm font-semibold text-white">{user.fullName}</p>
+              <p className="mt-0.5 text-xs text-slate-500">
+                <Protect plan="premium" fallback="Free">
+                  Premium
+                </Protect>{' '}
+                plan
+              </p>
             </div>
-            <LogOut onClick={signOut} className='w-4.5 text-gray-400 hover:text-gray-700 transition cursor-pointer' />
+          </div>
+        </button>
       </div>
-    </div>
+
+      {/* Nav */}
+      <nav className="gs-scrollbar-hide flex-1 overflow-y-auto px-3 py-4">
+        <p className="px-3 pb-2 font-heading text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">
+          Tools
+        </p>
+        <ul className="space-y-1">
+          {navItems.map(({ to, label, icon: Icon }) => (
+            <li key={to}>
+              <NavLink to={to} end={to === '/ai'} onClick={() => setSidebar(false)}>
+                {({ isActive }) => (
+                  <div
+                    className={[
+                      'flex w-full cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-left text-sm font-medium transition-all',
+                      isActive
+                        ? 'bg-gradient-to-r from-violet-600/25 to-fuchsia-600/10 text-white shadow-[0_0_0_1px_rgba(139,92,246,0.35)]'
+                        : 'text-slate-400 hover:bg-white/[0.04] hover:text-slate-100',
+                    ].join(' ')}
+                  >
+                    <span
+                      className={[
+                        'flex h-9 w-9 shrink-0 items-center justify-center rounded-lg',
+                        isActive
+                          ? 'bg-white/10 text-violet-200'
+                          : 'bg-white/[0.03] text-slate-500',
+                      ].join(' ')}
+                    >
+                      <Icon className="h-4 w-4" strokeWidth={2} />
+                    </span>
+                    <span className="font-heading text-[13px] tracking-tight">{label}</span>
+                  </div>
+                )}
+              </NavLink>
+            </li>
+          ))}
+        </ul>
+      </nav>
+
+      {/* Footer */}
+      <div className="border-t border-white/[0.06] p-4">
+        <button
+          type="button"
+          onClick={() => signOut()}
+          className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/[0.06] bg-white/[0.03] py-2.5 text-xs font-medium text-slate-400 transition hover:bg-white/[0.06] hover:text-slate-200"
+        >
+          <LogOut className="h-3.5 w-3.5" />
+          Sign out
+        </button>
+      </div>
+    </aside>
   )
 }
 

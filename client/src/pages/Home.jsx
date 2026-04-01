@@ -7,14 +7,14 @@ import Plan from '../components/Plan'
 import Footer from '../components/Footer'
 const Home = () => {
   return (
-    <>
+    <div className="min-h-screen bg-slate-950 gs-noise">
       <Navbar />
       <Hero />
       <AiTools/>
       <Testimonial />
       <Plan />
       <Footer />
-    </>
+    </div>
   )
 }
 
